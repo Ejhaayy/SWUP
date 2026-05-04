@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Essential for mobile-first rendering -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>See What's in UP</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    
+    <!-- Header Section -->
+    <header id="app-header">
+        <h1>See What's in UP</h1>
+    </header>
+
+    <!-- The Map Container -->
+    <div id="map"></div>
+
+    <!-- The Dark Mode Information Panel (Bottom Sheet) -->
+    <div id="info-panel">
+        <button id="close-btn">&times;</button>
+        <h2 id="bldg-name">Building Name</h2>
+        <p id="bldg-desc">Building description will appear here.</p>
+        <div id="bldg-tags">
+            <!-- Badges for cafeterias/libraries will be injected here -->
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Custom Map Logic -->
+    <script src="js/map.js"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 1. Deep Dark Background and Flexbox Layout */
+body, html {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #121212; 
+    color: #e0e0e0; 
+}
+
+/* 2. The UP Maroon Header */
+#app-header {
+    background-color: #7B1113; /* UP Maroon */
+    color: #ffffff;
+    padding: 16px 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
+    z-index: 10;
+}
+
+#app-header h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* 3. The Map Container */
+#map {
+    flex: 1; 
+    width: 100%;
+    z-index: 1;
+}
+
+/* 4. LEAFLET DARK MODE OVERRIDES */
+.leaflet-bar a {
+    background-color: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border-bottom: 1px solid #1a1a1a !important;
+}
+
+.leaflet-bar a:hover {
+    background-color: #3a3a3a !important;
+    color: #ffffff !important;
+}
+
+/* 5. INFORMATION PANEL (BOTTOM SHEET) */
+#info-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #1e1e1e; 
+    color: #e0e0e0;
+    padding: 24px 20px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    z-index: 1000; 
+    
+    /* Animation settings */
+    transform: translateY(110%); 
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    max-height: 50vh; 
+    overflow-y: auto; 
+}
+
+#info-panel.active {
+    transform: translateY(0);
+}
+
+#close-btn {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #888888;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+#close-btn:hover {
+    color: #ffffff;
+}
+
+#bldg-name {
+    margin-bottom: 8px;
+    color: #ffffff;
+    font-size: 1.4rem;
+    padding-right: 30px; 
+}
+
+#bldg-desc {
+    margin-bottom: 16px;
+    line-height: 1.5;
+    color: #bbbbbb;
+    font-size: 0.95rem;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #2a2a2a;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #444444;
+    color: #e0e0e0;
+}
+
+/* 6. DESKTOP SCALING (MEDIA QUERIES) */
+@media (min-width: 768px) {
+    #info-panel {
+        top: 60px; /* Aligns below header */
+        bottom: 0;
+        right: 0;
+        left: auto; 
+        width: 380px; 
+        height: calc(100% - 60px); 
+        max-height: none;
+        
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        
+        box-shadow: -4px 0 20px rgba(0,0,0,0.5);
+        transform: translateX(110%); /* Slide from right */
+    }
+
+    #info-panel.active {
+        transform: translateX(0);
+    }
+
+    #bldg-name {
+        font-size: 1.6rem;
+    }
+
+    #bldg-desc {
+        font-size: 1rem;
+    }
+}

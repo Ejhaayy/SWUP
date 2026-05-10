@@ -102,6 +102,11 @@ body, html {
     overflow-y: auto; 
 }
 
+/* ✅ Mobile active state (missing before) */
+#info-panel.active {
+    transform: translateY(0);
+}
+
 #close-btn {
     position: absolute;
     top: 16px;

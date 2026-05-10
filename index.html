@@ -6,57 +6,56 @@
     <title>See What's in UP</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
     <header id="app-header">     
-    <div class="header-main" id="menu-toggle">
-        <img src="dge-logo.png" alt="DGE Logo" id="header-logo">
-        <h1>See What's in UP <span class="arrow">▼</span></h1>
-    </div>
-    
-    <div id="filter-menu">
-        <div class="filter-item">
-            <input type="checkbox" id="check-ikot">
-            <label for="check-ikot">Ikot Stops</label>
+        <div class="header-main" id="menu-toggle">
+            <img src="dge-logo.png" alt="DGE Logo" id="header-logo">
+            <h1>See What's in UP <span class="arrow">▼</span></h1>
         </div>
-        <div class="filter-item">
-            <input type="checkbox" id="check-food" checked>
-            <label for="check-food">Food Areas</label>
+        
+        <div id="filter-menu">
+            <div class="filter-item">
+                <input type="checkbox" id="check-ikot">
+                <label for="check-ikot">🚙 Ikot Stops</label>
+            </div>
+            <div class="filter-item">
+                <input type="checkbox" id="check-food" checked>
+                <label for="check-food">🍴 Food Areas</label>
+            </div>
+            <div class="filter-item">
+                <input type="checkbox" id="check-water" checked>
+                <label for="check-water">💧 Drinking Water</label>
+            </div>
+            <div class="filter-item">
+                <input type="checkbox" id="check-library" checked>
+                <label for="check-library">📚 Libraries</label>
+            </div>
         </div>
-        <div class="filter-item">
-            <input type="checkbox" id="check-water" checked>
-            <label for="check-water">Drinking Water</label>
-        </div>
-    </div>
     </header>
 
     <div id="map"></div>
 
-<div id="info-panel">
-    <button id="close-btn">×</button>
-    <div id="bldg-img-container" style="display: none;"><img id="bldg-img" src=""></div>
-    <h2 id="bldg-name">Location Name</h2>
-    <div id="bldg-tags"></div>
-
-    <div id="food-section" class="amenity-detail" style="display: none;">
-        <h3>🍴 Food Area</h3>
-        <p id="food-info"></p>
-        <div class="amenity-img-box"><img id="food-img" src=""></div>
-    </div>
-
-    <div id="lib-section" class="amenity-detail" style="display: none;">
-        <h3>📚 Library</h3>
-        <p id="lib-info"></p>
-        <div class="amenity-img-box"><img id="lib-img" src=""></div>
-    </div>
-
-    <p id="bldg-desc"></p>
+    <div id="info-panel">
+        <button id="close-btn">×</button>
+        <div id="bldg-img-container" style="display: none;"><img id="bldg-img" src=""></div>
+        <h2 id="bldg-name">Location Name</h2>
+        <div id="bldg-tags"></div>
+        <div id="food-section" class="amenity-detail" style="display: none;">
+            <h3>🍴 Food Area</h3>
+            <p id="food-info"></p>
+            <div class="amenity-img-box"><img id="food-img" src=""></div>
+        </div>
+        <div id="lib-section" class="amenity-detail" style="display: none;">
+            <h3>📚 Library</h3>
+            <p id="lib-info"></p>
+            <div class="amenity-img-box"><img id="lib-img" src=""></div>
+        </div>
+        <p id="bldg-desc"></p>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
     <script src="js/map.js"></script>
 </body>
 </html>

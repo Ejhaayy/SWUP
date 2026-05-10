@@ -1,5 +1,5 @@
 // ==========================================
-// CONFIGURATION & STYLES
+// CONFIGURATION
 // ==========================================
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT7s8oCNcvh_ybmg_I2N1iK51X-SSDmqdjnuNV8DwEttUBeY9RPw7Fy6M6vgRCCNH5vYpO88nhzGDPp/pub?gid=0&single=true&output=csv';
 
@@ -15,15 +15,15 @@ const layersControl = {
 };
 
 // Base Styles
-const buildingStyle = { color: "#ffffff", weight: 1, opacity: 0.8, fillColor: "#cfcfcf", fillOpacity: 0.6 };
-const waterStyle = { color: "#4C8DBA", weight: 2, fillColor: "#4C8DBA", fillOpacity: 0.25 };
-const greeneryStyle = { color: "#3E8F4C", weight: 1, fillColor: "#3E8F4C", fillOpacity: 0.35 };
+const buildingStyle   = { color: "#ffffff", weight: 1, opacity: 0.8, fillColor: "#cfcfcf", fillOpacity: 0.6 };
+const waterStyle      = { color: "#4C8DBA", weight: 2, fillColor: "#4C8DBA", fillOpacity: 0.25 };
+const greeneryStyle   = { color: "#3E8F4C", weight: 1, fillColor: "#3E8F4C", fillOpacity: 0.35 };
 const activitiesStyle = { color: "#FF8C2B", weight: 2, fillColor: "#FF8C2B", fillOpacity: 0.35 };
 
-const map = L.map('map', { 
-    zoomControl: false, 
-    maxBounds: [[14.6380, 121.0520], [14.6680, 121.0780]], 
-    minZoom: 15 
+const map = L.map('map', {
+    zoomControl: false,
+    maxBounds: [[14.6380, 121.0520], [14.6680, 121.0780]],
+    minZoom: 15
 }).setView([14.6549, 121.0645], 16);
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
@@ -33,10 +33,82 @@ map.createPane('greeneryPane');
 map.getPane('greeneryPane').style.zIndex = 200;
 
 // Icons
-const ikotIcon = L.divIcon({ className: 'ikot-marker', html: '<img src="data/ikot.png">', iconSize: [28, 28], iconAnchor: [14, 14] });
-const foodIcon = L.divIcon({ className: 'amenity-marker food', html: '🍴', iconSize: [24, 24], iconAnchor: [12, 12] });
-const waterIcon = L.divIcon({ className: 'amenity-marker water', html: '💧', iconSize: [24, 24], iconAnchor: [12, 12] });
+const ikotIcon      = L.divIcon({ className: 'ikot-marker', html: '<img src="data/ikot.png">', iconSize: [28, 28], iconAnchor: [14, 14] });
+const foodIcon      = L.divIcon({ className: 'amenity-marker food',    html: '🍴', iconSize: [24, 24], iconAnchor: [12, 12] });
+const waterIcon     = L.divIcon({ className: 'amenity-marker water',   html: '💧', iconSize: [24, 24], iconAnchor: [12, 12] });
 const libMarkerIcon = L.divIcon({ className: 'amenity-marker library', html: '📚', iconSize: [24, 24], iconAnchor: [12, 12] });
+
+// ==========================================
+// CAROUSEL
+// ==========================================
+let carouselIndex = 0;
+let carouselImages = [];
+
+function buildCarousel(images) {
+    const track    = document.getElementById('carousel-track');
+    const dotsEl   = document.getElementById('carousel-dots');
+    const prevBtn  = document.getElementById('carousel-prev');
+    const nextBtn  = document.getElementById('carousel-next');
+    const container = document.getElementById('bldg-img-container');
+
+    carouselImages = images;
+    carouselIndex  = 0;
+
+    // Clear old content
+    track.innerHTML  = '';
+    dotsEl.innerHTML = '';
+
+    if (!images.length) {
+        container.style.display = 'none';
+        return;
+    }
+
+    container.style.display = 'block';
+
+    // Build slides
+    images.forEach((src, i) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.onerror = () => { img.style.display = 'none'; };
+        track.appendChild(img);
+
+        // Dot
+        const dot = document.createElement('div');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goToSlide(i));
+        dotsEl.appendChild(dot);
+    });
+
+    // Show/hide arrows
+    const multi = images.length > 1;
+    prevBtn.style.display = multi ? 'flex' : 'none';
+    nextBtn.style.display = multi ? 'flex' : 'none';
+    dotsEl.style.display  = multi ? 'flex' : 'none';
+
+    goToSlide(0);
+}
+
+function goToSlide(index) {
+    const track  = document.getElementById('carousel-track');
+    const dots   = document.querySelectorAll('.carousel-dot');
+    carouselIndex = (index + carouselImages.length) % carouselImages.length;
+    track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === carouselIndex));
+}
+
+document.getElementById('carousel-prev').addEventListener('click', () => goToSlide(carouselIndex - 1));
+document.getElementById('carousel-next').addEventListener('click', () => goToSlide(carouselIndex + 1));
+
+// Touch swipe support
+(function () {
+    const track = document.getElementById('bldg-img-container');
+    let startX = 0;
+    track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend', e => {
+        const diff = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) goToSlide(carouselIndex + (diff > 0 ? 1 : -1));
+    }, { passive: true });
+})();
 
 // ==========================================
 // CORE FUNCTIONS
@@ -57,29 +129,19 @@ function getImgUrl(id) {
 
 function updateInfoPanel(feature, typeLabelHtml, layer, originalStyle, themeColor) {
     clearSelection();
-    
+
     selectedFeature = { layer: layer, originalStyle: originalStyle };
     if (layer.setStyle) {
-        layer.setStyle({
-            color: themeColor, weight: 3, opacity: 1,
-            fillColor: themeColor, fillOpacity: 0.7
-        });
+        layer.setStyle({ color: themeColor, weight: 3, opacity: 1, fillColor: themeColor, fillOpacity: 0.7 });
     }
 
     const name = feature.properties.Name || 'Unnamed';
     const data = sheetDataMap[name];
     document.getElementById('bldg-name').textContent = name;
-    
-    // Main Building Image
-    const bImg = document.getElementById('bldg-img');
-    const bContainer = document.getElementById('bldg-img-container');
-    if (data?.image && data.image.trim() !== "") {
-        bImg.src = getImgUrl(data.image);
-        bContainer.style.display = 'block';
-        bImg.onerror = () => { bContainer.style.display = 'none'; };
-    } else { 
-        bContainer.style.display = 'none'; 
-    }
+
+    // Carousel images
+    const imageUrls = (data?.images || []).map(getImgUrl).filter(Boolean);
+    buildCarousel(imageUrls);
 
     // Tags
     let tagsHtml = [typeLabelHtml];
@@ -137,10 +199,10 @@ async function loadSpatialData() {
     });
 
     const polyConfigs = [
-        { url: './data/buildings.geojson', style: buildingStyle, label: '🏛️ Building', theme: '#7B1113', group: layersControl.buildings },
-        { url: './data/water_polygons.geojson', style: waterStyle, label: '💧 Water', theme: '#4C8DBA', group: null },
-        { url: './data/greenery.geojson', style: greeneryStyle, label: '🌿 Greenery', theme: '#3E8F4C', group: null, pane: 'greeneryPane' },
-        { url: './data/activities.geojson', style: activitiesStyle, label: '🏟️ Activity', theme: '#FF8C2B', group: null }
+        { url: './data/buildings.geojson',       style: buildingStyle,   label: '🏛️ Building', theme: '#7B1113', group: layersControl.buildings },
+        { url: './data/water_polygons.geojson',  style: waterStyle,      label: '💧 Water',    theme: '#4C8DBA', group: null },
+        { url: './data/greenery.geojson',        style: greeneryStyle,   label: '🌿 Greenery', theme: '#3E8F4C', group: null, pane: 'greeneryPane' },
+        { url: './data/activities.geojson',      style: activitiesStyle, label: '🏟️ Activity', theme: '#FF8C2B', group: null }
     ];
 
     polyConfigs.forEach(cfg => {
@@ -152,27 +214,27 @@ async function loadSpatialData() {
                     const s = sheetDataMap[f.properties.Name];
                     if (s) {
                         const center = l.getBounds().getCenter();
-                        const hasFood = !!s.foodName;
+                        const hasFood  = !!s.foodName;
                         const hasWater = s.water && s.water.toLowerCase() !== "no";
-                        const hasLib = !!s.libName;
+                        const hasLib   = !!s.libName;
 
                         if (hasFood && hasWater && hasLib) {
-                            L.marker([center.lat + 0.00006, center.lng], { icon: foodIcon }).addTo(layersControl.food);
-                            L.marker([center.lat - 0.00007, center.lng - 0.00007], { icon: waterIcon }).addTo(layersControl.water);
+                            L.marker([center.lat + 0.00006, center.lng],           { icon: foodIcon      }).addTo(layersControl.food);
+                            L.marker([center.lat - 0.00007, center.lng - 0.00007], { icon: waterIcon     }).addTo(layersControl.water);
                             L.marker([center.lat - 0.00007, center.lng + 0.00007], { icon: libMarkerIcon }).addTo(layersControl.library);
                         } else if (hasFood && hasWater) {
-                            L.marker([center.lat, center.lng + 0.00007], { icon: foodIcon }).addTo(layersControl.food);
+                            L.marker([center.lat, center.lng + 0.00007], { icon: foodIcon  }).addTo(layersControl.food);
                             L.marker([center.lat, center.lng - 0.00007], { icon: waterIcon }).addTo(layersControl.water);
                         } else if (hasFood && hasLib) {
-                            L.marker([center.lat, center.lng + 0.00007], { icon: foodIcon }).addTo(layersControl.food);
+                            L.marker([center.lat, center.lng + 0.00007], { icon: foodIcon      }).addTo(layersControl.food);
                             L.marker([center.lat, center.lng - 0.00007], { icon: libMarkerIcon }).addTo(layersControl.library);
                         } else if (hasWater && hasLib) {
-                            L.marker([center.lat, center.lng + 0.00007], { icon: waterIcon }).addTo(layersControl.water);
+                            L.marker([center.lat, center.lng + 0.00007], { icon: waterIcon     }).addTo(layersControl.water);
                             L.marker([center.lat, center.lng - 0.00007], { icon: libMarkerIcon }).addTo(layersControl.library);
                         } else {
-                            if (hasFood) L.marker(center, { icon: foodIcon }).addTo(layersControl.food);
-                            if (hasWater) L.marker(center, { icon: waterIcon }).addTo(layersControl.water);
-                            if (hasLib) L.marker(center, { icon: libMarkerIcon }).addTo(layersControl.library);
+                            if (hasFood)  L.marker(center, { icon: foodIcon      }).addTo(layersControl.food);
+                            if (hasWater) L.marker(center, { icon: waterIcon     }).addTo(layersControl.water);
+                            if (hasLib)   L.marker(center, { icon: libMarkerIcon }).addTo(layersControl.library);
                         }
                     }
                     l.on('click', (e) => {
@@ -196,7 +258,6 @@ async function loadSpatialData() {
 // INTERFACE
 // ==========================================
 
-// Pill toggles
 const layerMap = {
     ikot: layersControl.ikot,
     food: layersControl.food,
@@ -233,16 +294,17 @@ async function init() {
         const name = cols[0]?.replace(/^"|"$/g, '').trim();
         if (name) {
             sheetDataMap[name] = {
-                desc: cols[2]?.replace(/^"|"$/g, '').trim(),
-                tags: cols[3]?.replace(/^"|"$/g, '').trim().split(','),
-                image: cols[4]?.replace(/^"|"$/g, '').trim(),
-                foodName: cols[5]?.replace(/^"|"$/g, '').trim(),
-                foodImg: cols[6]?.replace(/^"|"$/g, '').trim(),
-                price: cols[7]?.replace(/^"|"$/g, '').trim(),
-                water: cols[8]?.replace(/^"|"$/g, '').trim(),
-                foodDetails: cols[9]?.replace(/^"|"$/g, '').trim(),
-                libName: cols[10]?.replace(/^"|"$/g, '').trim(),
-                libImg: cols[11]?.replace(/^"|"$/g, '').trim(),
+                desc:       cols[2]?.replace(/^"|"$/g, '').trim(),
+                tags:       cols[3]?.replace(/^"|"$/g, '').trim().split(','),
+                // col[4] is now comma-separated image IDs → array
+                images:     cols[4]?.replace(/^"|"$/g, '').trim().split(',').map(s => s.trim()).filter(Boolean),
+                foodName:   cols[5]?.replace(/^"|"$/g, '').trim(),
+                foodImg:    cols[6]?.replace(/^"|"$/g, '').trim(),
+                price:      cols[7]?.replace(/^"|"$/g, '').trim(),
+                water:      cols[8]?.replace(/^"|"$/g, '').trim(),
+                foodDetails:cols[9]?.replace(/^"|"$/g, '').trim(),
+                libName:    cols[10]?.replace(/^"|"$/g, '').trim(),
+                libImg:     cols[11]?.replace(/^"|"$/g, '').trim(),
                 libDetails: cols[12]?.replace(/^"|"$/g, '').trim()
             };
         }

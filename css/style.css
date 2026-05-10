@@ -1,209 +1,69 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* 1. Deep Dark Background and Flexbox Layout */
 body, html {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #121212; 
-    color: #e0e0e0; 
-    overflow: hidden; /* Prevents the page from infinitely scrolling and breaking the map zoom */
+    height: 100%; width: 100%;
+    display: flex; flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #121212; color: #e0e0e0; overflow: hidden;
 }
 
-/* 2. The Floating Squircle Header */
 #app-header {
-    background-color: #dcdcdc; 
-    border-radius: 24px; 
-    
-    position: absolute;
-    top: 20px; 
-    left: 20px;
-    transform: none;
-    
-    display: flex;
-    align-items: center; 
-    justify-content: center; 
-    gap: 12px; 
-    
-    padding: 10px 22px; 
-    width: max-content; 
-    max-width: 90%; 
-    
-    box-shadow: 0 6px 20px rgba(0,0,0,0.6); 
-    border: 1px solid #bfbfbf; 
-    z-index: 1000; 
+    background-color: #dcdcdc; border-radius: 24px;
+    position: absolute; top: 20px; left: 20px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 22px; width: max-content; max-width: 90%;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6); border: 1px solid #bfbfbf; z-index: 1000;
 }
 
-/* Style the new logo */
-#header-logo {
-    height: 34px; 
-    width: auto; 
-    filter: drop-shadow(0px 0px 8px #ffffff); 
-}
+#header-logo { height: 34px; width: auto; filter: drop-shadow(0px 0px 8px #ffffff); }
 
 #app-header h1 {
-    font-size: 1.6rem; 
-    font-weight: 800; 
-    letter-spacing: 1px; 
-    text-transform: uppercase;
-    white-space: nowrap; 
-    
-    color: #121212; 
-    text-shadow: 
-        0 0 6px #ffffff,
-        0 0 14px #ffffff,
-        0 0 22px #ffffff; 
-}
-/* 3. The Map Container */
-#map {
-    flex: 1; 
-    width: 100%;
-    height: 100%; 
-    z-index: 1;
+    font-size: 1.5rem; font-weight: 800; text-transform: uppercase;
+    color: #121212; text-shadow: 0 0 10px #ffffff;
 }
 
-/* 4. LEAFLET DARK MODE OVERRIDES */
-.leaflet-bar a {
-    background-color: #2a2a2a !important;
-    color: #e0e0e0 !important;
-    border-bottom: 1px solid #1a1a1a !important;
-}
+#map { flex: 1; width: 100%; height: 100%; z-index: 1; }
 
-.leaflet-bar a:hover {
-    background-color: #3a3a3a !important;
-    color: #ffffff !important;
-}
-
-/* 5. INFORMATION PANEL (BOTTOM SHEET) */
 #info-panel {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #dcdcdc; 
-    color: #121212;
-    padding: 24px 20px;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.35);
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    border: 1px solid #bfbfbf;
-    z-index: 1001; 
-    
-    transform: translateY(110%); 
+    position: absolute; bottom: 0; left: 0; width: 100%;
+    background-color: #dcdcdc; color: #121212;
+    padding: 24px 20px; border-top-left-radius: 20px; border-top-right-radius: 20px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.35); border: 1px solid #bfbfbf;
+    z-index: 1001; transform: translateY(110%);
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    
-    max-height: 50vh; 
-    overflow-y: auto; 
+    max-height: 55vh; overflow-y: auto;
 }
 
-/* ✅ Mobile active state (missing before) */
-#info-panel.active {
-    transform: translateY(0);
-}
+#info-panel.active { transform: translateY(0); }
 
-#close-btn {
-    position: absolute;
-    top: 16px;
-    right: 20px;
-    background: none;
-    border: none;
-    color: #333333;
-    font-size: 28px;
-    cursor: pointer;
-    line-height: 1;
-}
+#bldg-img-container { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 16px; border: 1px solid #bfbfbf; background: #eee; }
+#bldg-img { width: 100%; height: auto; display: block; object-fit: cover; max-height: 250px; }
 
-#close-btn:hover {
-    color: #000000;
-}
+#close-btn { position: absolute; top: 12px; right: 20px; background: none; border: none; color: #333; font-size: 32px; cursor: pointer; }
 
-#bldg-name {
-    margin-bottom: 8px;
-    color: #121212;
-    font-size: 1.4rem;
-    padding-right: 30px; 
-}
-
-#bldg-desc {
-    margin-bottom: 16px;
-    line-height: 1.5;
-    color: #3a3a3a;
-    font-size: 0.95rem;
-}
-
+/* TAGS */
 .tag {
-    display: inline-block;
-    background-color: #efefef;
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 0.8rem;
-    margin-right: 8px;
-    margin-bottom: 8px;
-    border: 1px solid #bfbfbf;
-    color: #121212;
+    display: inline-block; padding: 5px 10px; border-radius: 6px;
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+    margin-right: 6px; margin-bottom: 6px; background: #efefef; color: #121212;
 }
 
-/* 6. RESPONSIVE DESKTOP & MOBILE SCALING */
-@media (min-width: 768px) {
-    #info-panel {
-        top: 0; 
-        bottom: 0;
-        right: 0;
-        left: auto; 
-        width: 380px; 
-        height: 90vh; 
-        max-height: none;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        box-shadow: -4px 0 20px rgba(0,0,0,0.5);
-        transform: translateX(110%); 
-        border-radius: 24px;
-    }
+.tag-class, .tag-lab { background: #7B1113; color: white; }
+.tag-dorm { background: #5d4037; color: white; }
+.tag-clinic { background: #c62828; color: white; }
+.tag-court, .tag-track, .tag-football, .tag-tennis { background: #FF8C2B; color: white; }
+.tag-park, .tag-field, .tag-lawn { background: #3E8F4C; color: white; }
 
-    #info-panel.active {
-        transform: translateX(0);
-    }
-
-    #bldg-name { font-size: 1.6rem; }
-    #bldg-desc { font-size: 1rem; }
-}
-
-@media (max-width: 768px) {
-    #app-header {
-        width: 95%; 
-        padding: 14px 24px; 
-        border-radius: 20px;
-    }
-    
-    #app-header h1 {
-        font-size: 1.6rem; 
-        letter-spacing: 1px;
-    }
-
-    #header-logo {
-        height: 40px; 
-    }
-}
-
+/* IKOT MARKER */
 .ikot-marker {
-    background: #ffffff;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    background: #ffffff; border-radius: 50%;
+    width: 28px; height: 28px; display: flex;
+    align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4); border: 2px solid #FFD700;
 }
+.ikot-marker img { width: 18px; height: 18px; }
 
-.ikot-marker img {
-    width: 16px;
-    height: 16px;
-    display: block;
+@media (min-width: 768px) {
+    #info-panel { top: 20px; right: 20px; left: auto; bottom: auto; width: 380px; height: 90vh; border-radius: 24px; transform: translateX(120%); }
+    #info-panel.active { transform: translateX(0); }
 }

@@ -4,38 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>See What's in UP</title>
-    
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    
-    <!-- Header Section -->
     <header id="app-header">     
         <img src="dge-logo.png" alt="DGE Logo" id="header-logo">
         <h1>See What's in UP</h1>
     </header>
 
-    <!-- The Map Container -->
     <div id="map"></div>
 
-    <!-- The Dark Mode Information Panel (Bottom Sheet) -->
     <div id="info-panel">
         <button id="close-btn">&times;</button>
+        
+        <div id="bldg-img-container" style="display: none;">
+            <img id="bldg-img" src="" alt="Location Image">
+        </div>
+
         <h2 id="bldg-name">Location Name</h2>
         <p id="bldg-desc">Description will appear here.</p>
-        <div id="bldg-tags">
-            <!-- Badges for facilities, walkways, and Ikot routes will be injected here -->
-        </div>
+        <div id="bldg-tags"></div>
     </div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <!-- Custom Map Logic -->
     <script src="js/map.js"></script>
 </body>
 </html>

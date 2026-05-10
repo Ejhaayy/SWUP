@@ -82,7 +82,7 @@ body, html {
 
 #bldg-img-container { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 16px; border: 1px solid #bfbfbf; }
 #bldg-img { width: 100%; height: auto; display: block; object-fit: cover; }
-#close-btn { position: absolute; top: 12px; right: 20px; background: none; border: none; font-size: 32px; cursor: pointer; }
+#close-btn { position: sticky; top: 12px; right: 20px; background: none; border: none; font-size: 32px; cursor: pointer; }
 
 /* TAGS */
 #bldg-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
@@ -101,7 +101,7 @@ body, html {
 
 @media (min-width: 768px) {
     #info-panel {
-        top: 20px; right: 20px; left: auto; bottom: auto;
+        top: 16px; right: 20px; left: auto; bottom: auto;
         width: 380px; height: 92vh; border-radius: 24px;
         padding: 48px 20px 24px 20px;
         transform: translateX(120%);

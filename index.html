@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>See What's in UP</title>
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -16,22 +15,10 @@
         </div>
         
         <div id="filter-menu">
-            <div class="filter-item">
-                <input type="checkbox" id="check-ikot">
-                <label for="check-ikot">🚙 Ikot Stops</label>
-            </div>
-            <div class="filter-item">
-                <input type="checkbox" id="check-food" checked>
-                <label for="check-food">🍴 Food Areas</label>
-            </div>
-            <div class="filter-item">
-                <input type="checkbox" id="check-water" checked>
-                <label for="check-water">💧 Drinking Water</label>
-            </div>
-            <div class="filter-item">
-                <input type="checkbox" id="check-library" checked>
-                <label for="check-library">📚 Libraries</label>
-            </div>
+            <button class="pill" id="check-ikot" data-layer="ikot">🚙 Ikot</button>
+            <button class="pill active" id="check-food" data-layer="food">🍴 Food</button>
+            <button class="pill active" id="check-water" data-layer="water">💧 Water</button>
+            <button class="pill active" id="check-library" data-layer="library">📚 Library</button>
         </div>
     </header>
 

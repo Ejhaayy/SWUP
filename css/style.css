@@ -85,6 +85,7 @@ body, html {
 #close-btn {
     position: absolute;
     top: 12px;
+    left: auto;
     right: 20px;
     background: none;
     border: none;

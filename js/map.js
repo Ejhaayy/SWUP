@@ -49,7 +49,6 @@ function clearSelection() {
     }
 }
 
-// THE DEFINITIVE IMAGE PROXY FIX
 function getImgUrl(id) {
     if (!id || id === "") return '';
     const cleanId = id.trim();
@@ -60,7 +59,7 @@ function updateInfoPanel(feature, typeLabelHtml, layer, originalStyle, themeColo
     clearSelection();
     
     selectedFeature = { layer: layer, originalStyle: originalStyle };
-    if(layer.setStyle) {
+    if (layer.setStyle) {
         layer.setStyle({
             color: themeColor, weight: 3, opacity: 1,
             fillColor: themeColor, fillOpacity: 0.7
@@ -85,7 +84,7 @@ function updateInfoPanel(feature, typeLabelHtml, layer, originalStyle, themeColo
     // Tags
     let tagsHtml = [typeLabelHtml];
     if (data) {
-        if (data.tags) data.tags.forEach(t => { if(t.trim()) tagsHtml.push(`<span class="tag">${t.trim()}</span>`)});
+        if (data.tags) data.tags.forEach(t => { if (t.trim()) tagsHtml.push(`<span class="tag">${t.trim()}</span>`); });
         if (data.foodName) tagsHtml.push(`<span class="tag" style="background:#FF8C2B; color:white;">🍱 Food</span>`);
         if (data.water && data.water.toLowerCase() !== "no") tagsHtml.push(`<span class="tag" style="background:#4C8DBA; color:white;">💧 Water</span>`);
         if (data.libName) tagsHtml.push(`<span class="tag" style="background:#7B1113; color:white;">📚 Library</span>`);
@@ -118,9 +117,9 @@ function updateInfoPanel(feature, typeLabelHtml, layer, originalStyle, themeColo
 
 async function loadSpatialData() {
     fetch('./data/roads.geojson').then(r => r.json()).then(data => {
-        L.geoJSON(data, { style: (f) => ({ color: f.properties.is_ikot ? "#FFD700" : "#FFFFFF", weight: 2, opacity: 0.4 })}).addTo(map);
-        L.geoJSON(data, { filter: (f) => f.properties.is_ikot === 1, style: { color: "#FFD700", weight: 6, opacity: 0.3 }}).addTo(map);
-        L.geoJSON(data, { filter: (f) => f.properties.is_ikot === 1, style: { color: "#FFD700", weight: 6, opacity: 0.3 }}).addTo(layersControl.ikot);
+        L.geoJSON(data, { style: (f) => ({ color: f.properties.is_ikot ? "#FFD700" : "#FFFFFF", weight: 2, opacity: 0.4 }) }).addTo(map);
+        L.geoJSON(data, { filter: (f) => f.properties.is_ikot === 1, style: { color: "#FFD700", weight: 6, opacity: 0.3 } }).addTo(map);
+        L.geoJSON(data, { filter: (f) => f.properties.is_ikot === 1, style: { color: "#FFD700", weight: 6, opacity: 0.3 } }).addTo(layersControl.ikot);
     });
 
     fetch('./data/water_lines.geojson').then(r => r.json()).then(data => {
@@ -196,15 +195,34 @@ async function loadSpatialData() {
 // ==========================================
 // INTERFACE
 // ==========================================
-const toggles = { 'check-ikot': layersControl.ikot, 'check-food': layersControl.food, 'check-water': layersControl.water, 'check-library': layersControl.library };
-Object.keys(toggles).forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.onchange = function() { this.checked ? map.addLayer(toggles[id]) : map.removeLayer(toggles[id]); };
+
+// Pill toggles
+const layerMap = {
+    ikot: layersControl.ikot,
+    food: layersControl.food,
+    water: layersControl.water,
+    library: layersControl.library
+};
+
+document.querySelectorAll('.pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const layer = layerMap[btn.dataset.layer];
+        if (!layer) return;
+        if (btn.classList.toggle('active')) {
+            map.addLayer(layer);
+        } else {
+            map.removeLayer(layer);
+        }
+    });
 });
 
 document.getElementById('menu-toggle').onclick = () => document.getElementById('filter-menu').classList.toggle('expanded');
 document.getElementById('close-btn').onclick = () => { clearSelection(); document.getElementById('info-panel').classList.remove('active'); };
 map.on('click', () => { clearSelection(); document.getElementById('info-panel').classList.remove('active'); });
+
+// ==========================================
+// INIT
+// ==========================================
 
 async function init() {
     const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });

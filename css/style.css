@@ -13,28 +13,58 @@ body, html {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: #121212; 
     color: #e0e0e0; 
+    overflow: hidden; /* Prevents the page from infinitely scrolling and breaking the map zoom */
 }
 
-/* 2. The UP Maroon Header */
+/* 2. The Floating Squircle Header */
 #app-header {
-    background-color: #7B1113; /* UP Maroon */
-    color: #ffffff;
-    padding: 16px 20px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
-    z-index: 10;
+    background-color: #dcdcdc; 
+    border-radius: 24px; 
+    
+    position: absolute;
+    top: 20px; 
+    left: 20px;
+    transform: none;
+    
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    gap: 12px; 
+    
+    padding: 10px 22px; 
+    width: max-content; 
+    max-width: 90%; 
+    
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6); 
+    border: 1px solid #bfbfbf; 
+    z-index: 1000; 
+}
+
+/* Style the new logo */
+#header-logo {
+    height: 34px; 
+    width: auto; 
+    filter: drop-shadow(0px 0px 8px #ffffff); 
 }
 
 #app-header h1 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 1.6rem; 
+    font-weight: 800; 
+    letter-spacing: 1px; 
+    text-transform: uppercase;
+    white-space: nowrap; 
+    
+    color: #121212; 
+    text-shadow: 
+        0 0 6px #ffffff,
+        0 0 14px #ffffff,
+        0 0 22px #ffffff; 
 }
-
 /* 3. The Map Container */
 #map {
     flex: 1; 
     width: 100%;
+    height: 100%; 
     z-index: 1;
 }
 
@@ -56,24 +86,20 @@ body, html {
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #1e1e1e; 
-    color: #e0e0e0;
+    background-color: #dcdcdc; 
+    color: #121212;
     padding: 24px 20px;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.35);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    z-index: 1000; 
+    border: 1px solid #bfbfbf;
+    z-index: 1001; 
     
-    /* Animation settings */
     transform: translateY(110%); 
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     
     max-height: 50vh; 
     overflow-y: auto; 
-}
-
-#info-panel.active {
-    transform: translateY(0);
 }
 
 #close-btn {
@@ -82,19 +108,19 @@ body, html {
     right: 20px;
     background: none;
     border: none;
-    color: #888888;
+    color: #333333;
     font-size: 28px;
     cursor: pointer;
     line-height: 1;
 }
 
 #close-btn:hover {
-    color: #ffffff;
+    color: #000000;
 }
 
 #bldg-name {
     margin-bottom: 8px;
-    color: #ffffff;
+    color: #121212;
     font-size: 1.4rem;
     padding-right: 30px; 
 }
@@ -102,49 +128,77 @@ body, html {
 #bldg-desc {
     margin-bottom: 16px;
     line-height: 1.5;
-    color: #bbbbbb;
+    color: #3a3a3a;
     font-size: 0.95rem;
 }
 
 .tag {
     display: inline-block;
-    background-color: #2a2a2a;
+    background-color: #efefef;
     padding: 6px 12px;
     border-radius: 16px;
     font-size: 0.8rem;
     margin-right: 8px;
     margin-bottom: 8px;
-    border: 1px solid #444444;
-    color: #e0e0e0;
+    border: 1px solid #bfbfbf;
+    color: #121212;
 }
 
-/* 6. DESKTOP SCALING (MEDIA QUERIES) */
+/* 6. RESPONSIVE DESKTOP & MOBILE SCALING */
 @media (min-width: 768px) {
     #info-panel {
-        top: 60px; /* Aligns below header */
+        top: 0; 
         bottom: 0;
         right: 0;
         left: auto; 
         width: 380px; 
-        height: calc(100% - 60px); 
+        height: 90vh; 
         max-height: none;
-        
         border-top-left-radius: 0;
         border-top-right-radius: 0;
-        
         box-shadow: -4px 0 20px rgba(0,0,0,0.5);
-        transform: translateX(110%); /* Slide from right */
+        transform: translateX(110%); 
+        border-radius: 24px;
     }
 
     #info-panel.active {
         transform: translateX(0);
     }
 
-    #bldg-name {
-        font-size: 1.6rem;
+    #bldg-name { font-size: 1.6rem; }
+    #bldg-desc { font-size: 1rem; }
+}
+
+@media (max-width: 768px) {
+    #app-header {
+        width: 95%; 
+        padding: 14px 24px; 
+        border-radius: 20px;
+    }
+    
+    #app-header h1 {
+        font-size: 1.6rem; 
+        letter-spacing: 1px;
     }
 
-    #bldg-desc {
-        font-size: 1rem;
+    #header-logo {
+        height: 40px; 
     }
+}
+
+.ikot-marker {
+    background: #ffffff;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.ikot-marker img {
+    width: 16px;
+    height: 16px;
+    display: block;
 }

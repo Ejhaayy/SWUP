@@ -196,7 +196,7 @@ async function loadSpatialData() {
 // ==========================================
 // INTERFACE
 // ==========================================
-const toggles = { 'check-ikot': layersControl.ikot, 'check-food': layersControl.food, 'check-water': layersControl.water };
+const toggles = { 'check-ikot': layersControl.ikot, 'check-food': layersControl.food, 'check-water': layersControl.water, 'check-library': layersControl.library };
 Object.keys(toggles).forEach(id => {
     const el = document.getElementById(id);
     if(el) el.onchange = function() { this.checked ? map.addLayer(toggles[id]) : map.removeLayer(toggles[id]); };

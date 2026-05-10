@@ -135,6 +135,17 @@ function updateInfoPanel(feature, typeLabelHtml, layer, originalStyle, themeColo
         layer.setStyle({ color: themeColor, weight: 3, opacity: 1, fillColor: themeColor, fillOpacity: 0.7 });
     }
 
+    // Snap to center
+    if (layer.getBounds) {
+        map.flyTo(layer.getBounds().getCenter(), Math.max(map.getZoom(), 17), {
+            animate: true, duration: 0.6
+        });
+    } else if (layer.getLatLng) {
+        map.flyTo(layer.getLatLng(), Math.max(map.getZoom(), 17), {
+            animate: true, duration: 0.6
+        });
+    }
+
     const name = feature.properties.Name || 'Unnamed';
     const data = sheetDataMap[name];
     document.getElementById('bldg-name').textContent = name;

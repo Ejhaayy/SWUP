@@ -1,6 +1,5 @@
-// ==========================================
 // CONFIGURATION
-// ==========================================
+
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT7s8oCNcvh_ybmg_I2N1iK51X-SSDmqdjnuNV8DwEttUBeY9RPw7Fy6M6vgRCCNH5vYpO88nhzGDPp/pub?gid=0&single=true&output=csv';
 
 let sheetDataMap = {};
@@ -20,6 +19,11 @@ const waterStyle      = { color: "#4C8DBA", weight: 2, fillColor: "#4C8DBA", fil
 const greeneryStyle   = { color: "#3E8F4C", weight: 1, fillColor: "#3E8F4C", fillOpacity: 0.35 };
 const activitiesStyle = { color: "#FF8C2B", weight: 2, fillColor: "#FF8C2B", fillOpacity: 0.35 };
 
+// Road Styles
+const generalRoadStyle = { color: "#FFFFFF", weight: 2, opacity: 0.4 };
+const ikotRouteStyle = { color: "#FFD700", weight: 6, opacity: 0.3 };
+const pathwayStyle = { color: "#B0B0B0", weight: 1.5, opacity: 0.6, dashArray: "4, 3" }; // Dashed line for pathways
+
 const map = L.map('map', {
     zoomControl: false,
     maxBounds: [[14.6380, 121.0520], [14.6680, 121.0780]],
@@ -38,9 +42,9 @@ const foodIcon      = L.divIcon({ className: 'amenity-marker food',    html: '�
 const waterIcon     = L.divIcon({ className: 'amenity-marker water',   html: '💧', iconSize: [24, 24], iconAnchor: [12, 12] });
 const libMarkerIcon = L.divIcon({ className: 'amenity-marker library', html: '📚', iconSize: [24, 24], iconAnchor: [12, 12] });
 
-// ==========================================
+
 // CAROUSEL
-// ==========================================
+
 let carouselIndex = 0;
 let carouselImages = [];
 
@@ -106,9 +110,7 @@ document.getElementById('carousel-next').addEventListener('click', () => goToSli
     }, { passive: true });
 })();
 
-// ==========================================
 // CORE FUNCTIONS
-// ==========================================
 
 function clearSelection() {
     if (selectedFeature) {
@@ -191,17 +193,33 @@ function updateInfoPanel(feature, typeLabelHtml, layer, originalStyle, themeColo
     document.getElementById('info-panel').classList.add('active');
 }
 
-// ==========================================
+
 // DATA LOADING
-// ==========================================
+
 
 async function loadSpatialData() {
     const fetches = [];
 
+    // Load roads with differentiation between general roads, ikot routes, and pathways
     fetches.push(fetch('./data/roads.geojson').then(r => r.json()).then(data => {
-        L.geoJSON(data, { style: (f) => ({ color: f.properties.is_ikot ? "#FFD700" : "#FFFFFF", weight: 2, opacity: 0.4 }) }).addTo(map);
-        L.geoJSON(data, { filter: (f) => f.properties.is_ikot === 1, style: { color: "#FFD700", weight: 6, opacity: 0.3 } }).addTo(map);
-        L.geoJSON(data, { filter: (f) => f.properties.is_ikot === 1, style: { color: "#FFD700", weight: 6, opacity: 0.3 } }).addTo(layersControl.ikot);
+        // Separate features into roads and walkways
+        const roads = data.features.filter(f => f.properties.type === "Road");
+        const walkways = data.features.filter(f => f.properties.type === "Walkway");
+        
+        // General roads (non-ikot)
+        L.geoJSON({ type: "FeatureCollection", features: roads.filter(f => !f.properties.is_ikot) }, 
+            { style: generalRoadStyle }).addTo(map);
+        
+        // Ikot routes
+        L.geoJSON({ type: "FeatureCollection", features: roads.filter(f => f.properties.is_ikot) }, 
+            { style: ikotRouteStyle }).addTo(map);
+        
+        L.geoJSON({ type: "FeatureCollection", features: roads.filter(f => f.properties.is_ikot) }, 
+            { style: ikotRouteStyle }).addTo(layersControl.ikot);
+        
+        // Pathways (walkways)
+        L.geoJSON({ type: "FeatureCollection", features: walkways }, 
+            { style: pathwayStyle }).addTo(map);
     }));
 
     fetches.push(fetch('./data/water_lines.geojson').then(r => r.json()).then(data => {
@@ -276,9 +294,8 @@ async function loadSpatialData() {
     await Promise.all(fetches);
 }
 
-// ==========================================
 // INTERFACE
-// ==========================================
+
 
 const layerMap = {
     ikot: layersControl.ikot,
@@ -302,10 +319,6 @@ document.querySelectorAll('.pill').forEach(btn => {
 document.getElementById('menu-toggle').onclick = () => document.getElementById('filter-menu').classList.toggle('expanded');
 document.getElementById('close-btn').onclick = () => { clearSelection(); document.getElementById('info-panel').classList.remove('active'); };
 map.on('click', () => { clearSelection(); document.getElementById('info-panel').classList.remove('active'); });
-
-// ==========================================
-// INIT
-// ==========================================
 
 async function init() {
     const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
